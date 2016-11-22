@@ -29,6 +29,6 @@
 *.app
 
 *.dat
-da-lab2
+da-lab4
 out.txt
 !/lib/*
