@@ -10,6 +10,17 @@ const int NOTATION_BASE = 10;
 const TNumber NUM_EOF = -2;
 const TNumber SEPARATOR = -1;
 
+class TTextPosition {
+public:
+	size_t Line;
+	size_t Position;
+
+	void Print() {
+		cout << this->Line << ", " << this->Position << endl;
+	}
+};
+
+
 TNumber GetNum(bool *is_end_line, bool *is_end_file) {
 	//cout << "Get::In" << endl;
 	string str_tmp = "";
@@ -94,128 +105,85 @@ int main() {
 
 
 	TNumber tmp;
-	//int sym;
-	//str_tmp = "";
 	size_t current_line = 1;
 	size_t current_position = 1;
 	
 	z_block_left = 0;
 	z_block_right = 0;
-	//bool is_first = true;
 	bool is_end_line;
 	bool is_end_file;
 	size_t last_got = 0;
-	//while ((tmp = GetNum(&is_end_line, &is_end_file)) != NUM_EOF) {
-	while (true) {
-		//cout << "I: " << i << endl;
-		/*if (i >= sample.size()) {
-			size_t tmp_size = sample.size() * 2;
-			sample.resize(tmp_size);
-			z_function.resize(tmp_size);
-		}*/
-		//cout << "Point1" << endl;
-		//sample[i] = tmp;
-		//cout << "MainPoint" << endl;
 
-		/*if (i <= z_block_right) {
-			z_function[i] = min(z_function[i - z_block_left], z_block_right - i + 1);
-		} else {
-			is_first = false;
-		}*/
+	vector <TTextPosition> text_position;
+	text_position.resize(1);
+	while (true) {
 		z_function[i] = 0;
-		/*for (size_t k = i; sample[k] == sample[k - i] && k < sample.size(); k++) {
-			z_function[i]++;
-		}*/
-		//cout << "Point2" << endl;
 		for (size_t j = i; !is_end_file; j++) {
-			//cout << "EndFile: " << is_end_file << endl;
-			//cout << "Point1" << endl;
-			//cout << "J: " << j << endl;
 			if (j >= sample.size()) {
 				size_t tmp_size = sample.size() * 2;
 				sample.resize(tmp_size);
 				z_function.resize(tmp_size);
 			}
+			size_t position_new_size = j - sample_size - 1;
+			if (position_new_size >= text_position.size()) {
+				text_position.resize(text_position.size() * 2);
+			}
 
-			//bool eof_tmp;
 			if (j > last_got) {
-				//cout << "Input" << endl;
 				tmp = GetNum(&is_end_line, &is_end_file);
+				text_position[position_new_size].Line = current_line;
+				text_position[position_new_size].Position = current_position;
+
+				if (!is_end_line) {
+					current_position++;
+				} else {
+					current_line++;
+					current_position = 1;
+				}
+
 				if (is_end_file) {
-					//cout << "End File" << endl;
 					break;
 				}
 
 				sample[j] = tmp;
 				last_got = j;
 			}
-			//cout << sample[j] << ":" << sample[j - i] << endl;
 
 			if (sample[j] != sample[j - i]) {
 				break;
 			}
 			z_function[i]++;
-			//cout << "Z-value[" << i << "]: " << z_function[i] << endl;				
-			//cout << "Point1-2" << endl;
-				
-			//cout << "Point1-3" << endl;
 		}
 		if (is_end_file) {
 			break;
 		}
-		//cout << "EndJ" << endl;
+		if (z_function[i] == sample_size) {
+			text_position[i - sample_size - 1].Print();
+		}
 		if (z_function[i] > 0) {
 			z_block_left = i;
 			z_block_right = i + z_function[i] - 1;
 		}
-		//cout << "Point2-3" << endl;
-		//cout << "Inc1" << endl;
 		i++;
 
 		long long z_tmp = -1;
 		while (i <= z_block_right) {
-			//cout << "\tI: " << i << endl;
-			//cout << "Point3" << endl;
 			z_function[i] = min(z_function[i - z_block_left], z_block_right - i + 1);
+			if (z_function[i] == sample_size) {
+				text_position[i - sample_size - 1].Print();
+			}
 			z_tmp = i + z_function[i] - z_block_right - 1;
 			if (z_tmp >= 0) {
-				//is_got = z_block_right - i + 1;
 				z_block_right = i - 1;
 				break;
 			}
-			//cout << "Inc2" << endl;
 			i++;
 		}
-		/*if (z_function[z_block_right] == sample_size) {
-			cout << "Position: " << current_line << ", " << current_position << endl;
-		}*/
-		/*if (sample[i] == sample[0]) {
-			is_got = 1;
-		} else {
-			z_function[i] = 0;
-			i++;
-		}*/
 		if (z_tmp < 0) {
-			//cout << "Inc3" << endl;
 			i++;
-		}
-		//cout << "Point4" << endl;
-
-
-		//cout << "Point5" << endl;
-		//cout << "Inc" << endl;
-		//i++;
-		
-		if (!is_end_line) {
-			current_position++;
-			continue;
-		} else {
-			current_line++;
-			current_position = 1;
-			continue;
 		}
 	}
-	//cout << "PromPoint" << endl;
+
 	cout << "Sample: " << sample_size << endl;
 	cout << "Total: " << i << endl;
 	for (size_t j = sample_size + 1; j < i; j++) {
