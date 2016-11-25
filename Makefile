@@ -5,7 +5,7 @@ COMPILLER=g++
 all: start
 
 #start: main.o
-#	$(COMPILLER) $(FLAGS) -o da-lab2 main.o -L. lib/lib-z-search.a
+#	$(COMPILLER) $(FLAGS) -o da-lab4 main.o -L. lib/lib-z-search.a
 
 start: main.o
 	$(COMPILLER) $(FLAGS) -o da-lab4 main.o
