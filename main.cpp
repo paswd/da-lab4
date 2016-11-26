@@ -20,6 +20,13 @@ public:
 	}
 };
 
+bool IsSeparator(int sym) {
+	if (sym == ' ' || sym == '\t' || sym == '\n') {
+		return true;
+	}
+	return false;
+}
+
 
 TNumber GetNum(bool *is_end_line, bool *is_end_file) {
 	//cout << "Get::In" << endl;
@@ -28,12 +35,20 @@ TNumber GetNum(bool *is_end_line, bool *is_end_file) {
 	*is_end_line = true;
 	*is_end_file = true;
 	size_t cnt = 0;
+	bool is_first = true;
 	//cout << "Get::StartWhile" << endl;
 	while ((sym = getchar()) != EOF) {
 		//cout << "Sym: " << sym << endl;
 		//cout << cnt << endl;
-		cnt++;
+		
 		//cout << "GetPoint" << endl;
+		if (is_first && IsSeparator(sym)) {
+			continue;
+		}
+		cnt++;
+		if (!IsSeparator(sym)) {
+			is_first = false;
+		}
 		if (sym == ' ' || sym == '\n') {
 			*is_end_file = false;
 			if (sym == ' ') {
@@ -98,10 +113,10 @@ int main() {
 			}
 		}
 	}
-	for (size_t j = 0; j < z_function.size(); j++) {
+	/*for (size_t j = 0; j < z_function.size(); j++) {
 		cout << z_function[j] << ' ';
 	}
-	cout << endl << endl;
+	cout << endl << endl;*/
 
 
 	TNumber tmp;
@@ -110,27 +125,43 @@ int main() {
 	
 	z_block_left = 0;
 	z_block_right = 0;
-	bool is_end_line;
-	bool is_end_file;
+	bool is_end_line = false;
+	bool is_end_file = false;
 	size_t last_got = 0;
 
+	//cout << "Point1" << endl;
 	vector <TTextPosition> text_position;
 	text_position.resize(1);
+	//cout << "Point2" << endl;
+	size_t read = 0;
 	while (true) {
+		//cout << "Cicle1" << endl;
+		if (i >= sample.size()) {
+			size_t tmp_size = sample.size() * 2;
+			sample.resize(tmp_size);
+			z_function.resize(tmp_size);
+		}
 		z_function[i] = 0;
 		for (size_t j = i; !is_end_file; j++) {
+			//cout << "Cicle2" << endl;
+			//cout << "Point1" << endl;
 			if (j >= sample.size()) {
 				size_t tmp_size = sample.size() * 2;
 				sample.resize(tmp_size);
 				z_function.resize(tmp_size);
 			}
+			//cout << "Point2" << endl;
 			size_t position_new_size = j - sample_size - 1;
 			if (position_new_size >= text_position.size()) {
 				text_position.resize(text_position.size() * 2);
 			}
+			//cout << "Point3" << endl;
 
-			if (j > last_got) {
+			//cout << "Read: " << j << ":" << last_got << endl;
+
+			if (j > last_got && !is_end_file) {
 				tmp = GetNum(&is_end_line, &is_end_file);
+				read++;
 				text_position[position_new_size].Line = current_line;
 				text_position[position_new_size].Position = current_position;
 
@@ -141,20 +172,22 @@ int main() {
 					current_position = 1;
 				}
 
+
 				if (is_end_file) {
 					break;
 				}
 
-				sample[j] = tmp;
 				last_got = j;
+				sample[j] = tmp;
 			}
-
+			//cout << "J: " << j << endl;
+			//cout << sample[j] << ":" << sample[j - i] << endl;
 			if (sample[j] != sample[j - i]) {
 				break;
 			}
 			z_function[i]++;
 		}
-		if (is_end_file) {
+		if (is_end_file && i >= last_got) {
 			break;
 		}
 		if (z_function[i] == sample_size) {
@@ -163,11 +196,26 @@ int main() {
 		if (z_function[i] > 0) {
 			z_block_left = i;
 			z_block_right = i + z_function[i] - 1;
+			//cout << "Block: " << z_block_left << " " << z_block_right << endl;
 		}
-		i++;
+		
+		/*if (!is_end_file || i < last_got) {
+			cout << "Inc1: " << i << ":" << last_got << endl;
+			i++;
+		}*/
+		bool is_z_cicle_first = true;
 
 		long long z_tmp = -1;
 		while (i <= z_block_right) {
+			if (is_z_cicle_first) {
+				is_z_cicle_first = false;
+				if (is_end_file && i >= last_got) {
+					break;
+				}
+				i++;
+				continue;
+			}
+			//cout << "Cicle3" << endl;
 			z_function[i] = min(z_function[i - z_block_left], z_block_right - i + 1);
 			if (z_function[i] == sample_size) {
 				text_position[i - sample_size - 1].Print();
@@ -177,19 +225,25 @@ int main() {
 				z_block_right = i - 1;
 				break;
 			}
+			//if (!is_end_file || i < last_got) {
+			//cout << "Inc2: " << i << ":" << last_got << endl;
 			i++;
+				//continue;
+			//}
 		}
-		if (z_tmp < 0) {
+		if (z_tmp < 0 && (!is_end_file || i < last_got) && sample[i] != sample[0]) {
+			//cout << "Inc3:" << i << ":" << last_got << endl;
 			i++;
 		}
 	}
 
-	cout << "Sample: " << sample_size << endl;
-	cout << "Total: " << i << endl;
-	for (size_t j = sample_size + 1; j < i; j++) {
+	//cout << "Got: " << read - 1 << endl;
+	//cout << "Sample: " << sample_size << endl;
+	//cout << "Total: " << i << endl;
+	/*for (size_t j = sample_size + 1; j < i; j++) {
 		cout << z_function[j] << ' ';
 	}
-	cout << endl;
+	cout << endl;*/
 	
 	
 	return 0;
