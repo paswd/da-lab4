@@ -78,10 +78,15 @@ int main() {
 	size_t str_end = str_tmp.size();
 	size_t i;
 	for (i = 0; str_end > 0; i++) {
+		cout << "1: " << str_start << " " << str_end << endl;
+		if (IsSeparator(str_tmp[i])) {
+			continue;
+		}
 		if (i >= sample.size()) {
 			sample.resize(sample.size() * 2);
 		}
 		sample[i] = stoll(str_tmp, &str_start, NOTATION_BASE);
+		cout << "2: " << str_start << " " << str_end << endl;
 		//str_start++;
 		//cout << "Input: " << sample[i] << endl;
 		//cout << str_start << ":" << str_end << endl;
@@ -191,9 +196,9 @@ int main() {
 			}
 			z_function[i]++;
 		}
-		if (is_end_file && i >= last_got) {
+		/*if (is_end_file && i >= last_got) {
 			break;
-		}
+		}*/
 		if (z_function[i] == sample_size) {
 			text_position[i - sample_size - 1].Print();
 		}
@@ -201,6 +206,9 @@ int main() {
 			z_block_left = i;
 			z_block_right = i + z_function[i] - 1;
 			//cout << "Block: " << z_block_left << " " << z_block_right << endl;
+		}
+		if (is_end_file && i >= last_got && z_function[i] < sample_size) {
+			break;
 		}
 		
 		/*if (!is_end_file || i < last_got) {
@@ -242,12 +250,12 @@ int main() {
 	}
 
 	//cout << "Got: " << read - 1 << endl;
-	cout << "Sample: " << sample_size << endl;
-	cout << "Total: " << i << endl;
-	for (size_t j = sample_size + 1; j < i; j++) {
+	//cout << "Sample: " << sample_size << endl;
+	//cout << "Total: " << i << endl;
+	/*for (size_t j = sample_size + 1; j < i; j++) {
 		cout << z_function[j] << ' ';
 	}
-	cout << endl;
+	cout << endl;*/
 	
 	
 	return 0;
