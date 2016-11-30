@@ -78,15 +78,15 @@ int main() {
 	size_t str_end = str_tmp.size();
 	size_t i;
 	for (i = 0; str_end > 0; i++) {
-		cout << "1: " << str_start << " " << str_end << endl;
-		if (IsSeparator(str_tmp[i])) {
-			continue;
+		if (!IsSeparator(str_tmp[0])) {
+			if (i >= sample.size()) {
+				sample.resize(sample.size() * 2);
+			}
+			sample[i] = stoll(str_tmp, &str_start, NOTATION_BASE);
+		} else {
+			i--;
+			str_start = 1;
 		}
-		if (i >= sample.size()) {
-			sample.resize(sample.size() * 2);
-		}
-		sample[i] = stoll(str_tmp, &str_start, NOTATION_BASE);
-		cout << "2: " << str_start << " " << str_end << endl;
 		//str_start++;
 		//cout << "Input: " << sample[i] << endl;
 		//cout << str_start << ":" << str_end << endl;
