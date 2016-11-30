@@ -247,6 +247,9 @@ int main() {
 			//cout << "Inc3:" << i << ":" << last_got << endl;
 			i++;
 		}
+		if (is_end_file) {
+			break;
+		}
 	}
 
 	//cout << "Got: " << read - 1 << endl;
