@@ -28,7 +28,7 @@ bool IsSeparator(int sym) {
 }
 
 
-TNumber GetNum(bool *is_end_line, bool *is_end_file) {
+TNumber GetNum(bool *is_end_line, size_t *line_shift, bool *is_end_file) {
 	//cout << "Get::In" << endl;
 	string str_tmp = "";
 	int sym;
@@ -40,9 +40,11 @@ TNumber GetNum(bool *is_end_line, bool *is_end_file) {
 	while ((sym = getchar()) != EOF) {
 		//cout << "Sym: " << sym << endl;
 		//cout << cnt << endl;
-		
 		//cout << "GetPoint" << endl;
 		if (is_first && IsSeparator(sym)) {
+			if (sym == '\n') {
+				(*line_shift)++;
+			}
 			continue;
 		}
 		cnt++;
@@ -133,7 +135,7 @@ int main() {
 	vector <TTextPosition> text_position;
 	text_position.resize(1);
 	//cout << "Point2" << endl;
-	size_t read = 0;
+	//size_t read = 0;
 	while (true) {
 		//cout << "Cicle1" << endl;
 		if (i >= sample.size()) {
@@ -160,8 +162,10 @@ int main() {
 			//cout << "Read: " << j << ":" << last_got << endl;
 
 			if (j > last_got && !is_end_file) {
-				tmp = GetNum(&is_end_line, &is_end_file);
-				read++;
+				size_t line_shift = 0;
+				tmp = GetNum(&is_end_line, &line_shift, &is_end_file);
+				//read++;
+				current_line += line_shift;
 				text_position[position_new_size].Line = current_line;
 				text_position[position_new_size].Position = current_position;
 
@@ -238,12 +242,12 @@ int main() {
 	}
 
 	//cout << "Got: " << read - 1 << endl;
-	//cout << "Sample: " << sample_size << endl;
-	//cout << "Total: " << i << endl;
-	/*for (size_t j = sample_size + 1; j < i; j++) {
+	cout << "Sample: " << sample_size << endl;
+	cout << "Total: " << i << endl;
+	for (size_t j = sample_size + 1; j < i; j++) {
 		cout << z_function[j] << ' ';
 	}
-	cout << endl;*/
+	cout << endl;
 	
 	
 	return 0;
