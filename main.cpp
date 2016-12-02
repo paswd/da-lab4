@@ -109,16 +109,20 @@ int main() {
 	for (size_t j = 1; j < z_function.size(); j++) {
 		if (j <= z_block_right) {
 			z_function[j] = min(z_function[j - z_block_left], z_block_right - j + 1);
-		} else {
-			z_function[j] = 0;
-			for (size_t k = j; sample[k] == sample[k - j] && k < sample.size(); k++) {
-				z_function[j]++;
-			}
-			if (z_function[j] > 0) {
-				z_block_left = j;
-				z_block_right = j + z_function[j] - 1;
+		//} else {
+			if (j + z_function[j] < z_block_right) {
+				continue;
 			}
 		}
+		z_function[j] = 0;
+		for (size_t k = j; sample[k] == sample[k - j] && k < sample.size(); k++) {
+			z_function[j]++;
+		}
+		if (z_function[j] > 0) {
+			z_block_left = j;
+			z_block_right = j + z_function[j] - 1;
+		}
+		//}
 	}
 	/*for (size_t j = 0; j < z_function.size(); j++) {
 		cout << z_function[j] << ' ';
@@ -142,6 +146,10 @@ int main() {
 	//cout << "Point2" << endl;
 	//size_t read = 0;
 	while (true) {
+		/*bool abc = false;
+		if (i == 27) {
+			abc = true;
+		}*/
 		//cout << "Cicle1" << endl;
 		if (i >= sample.size()) {
 			size_t tmp_size = sample.size() * 2;
@@ -171,14 +179,19 @@ int main() {
 				tmp = GetNum(&is_end_line, &line_shift, &is_end_file);
 				//read++;
 				current_line += line_shift;
+				if (line_shift > 0) {
+					current_position = 1;
+				}
 				text_position[position_new_size].Line = current_line;
 				text_position[position_new_size].Position = current_position;
 
 				if (!is_end_line) {
 					current_position++;
+					//cout << "Pos1: " << current_line << ":" << current_position << endl;
 				} else {
 					current_line++;
 					current_position = 1;
+					//cout << "Pos2: " << current_line << ":" << current_position << endl;
 				}
 
 
@@ -189,8 +202,23 @@ int main() {
 				last_got = j;
 				sample[j] = tmp;
 			}
-			//cout << "J: " << j << endl;
-			//cout << sample[j] << ":" << sample[j - i] << endl;
+			/*if (j == 27) {
+				abc = true;
+			}
+			if (abc) {
+				cout << "J: " << j << endl;
+				cout << sample[j] << ":" << sample[j - i] << endl;
+				cout << "J | J - I: " << j << " " << j - i << endl;
+				cout << endl;
+				for (size_t k = 0; k < sample.size(); k++) {
+					cout << sample[k] << ' ';
+				}
+				cout << endl;
+				for (size_t k = 0; k < sample.size(); k++) {
+					cout << z_function[k] << ' ';
+				}
+				cout << endl;
+			}*/
 			if (sample[j] != sample[j - i]) {
 				break;
 			}
