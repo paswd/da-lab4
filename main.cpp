@@ -262,8 +262,73 @@ int main() {
 			}
 			z_tmp = i + z_function[i] - z_block_right - 1;
 			if (z_tmp >= 0) {
-				z_block_right = i - 1;
-				break;
+				/*z_block_right = i - 1;
+				break;*/
+				bool res = true;
+				for (size_t j = z_block_right + 1; res; j++) {
+					res = false;
+					if (j >= sample.size()) {
+						size_t tmp_size = sample.size() * 2;
+						sample.resize(tmp_size);
+						z_function.resize(tmp_size);
+					}
+					//cout << "Point2" << endl;
+					size_t position_new_size = j - sample_size - 1;
+					if (position_new_size >= text_position.size()) {
+						text_position.resize(text_position.size() * 2);
+					}
+					//cout << "Point3" << endl;
+
+					//cout << "Read: " << j << ":" << last_got << endl;
+
+					if (j > last_got && !is_end_file) {
+						size_t line_shift = 0;
+						tmp = GetNum(&is_end_line, &line_shift, &is_end_file);
+						//read++;
+						current_line += line_shift;
+						if (line_shift > 0) {
+							current_position = 1;
+						}
+						text_position[position_new_size].Line = current_line;
+						text_position[position_new_size].Position = current_position;
+
+						if (!is_end_line) {
+							current_position++;
+							//cout << "Pos1: " << current_line << ":" << current_position << endl;
+						} else {
+							current_line++;
+							current_position = 1;
+							//cout << "Pos2: " << current_line << ":" << current_position << endl;
+						}
+
+
+						if (is_end_file) {
+							break;
+						}
+
+						last_got = j;
+						sample[j] = tmp;
+					}
+					//cout << sample[j] << " " << sample[j - i] << endl;
+					if (sample[j] == sample[j - i]) {
+						z_block_left = i;
+						z_block_right = j;
+						z_function[i]++;
+						res = true;
+					}
+					/*if (z_function[i] == sample_size) {
+						text_position[i - sample_size - 1].Print();
+					}*/
+					/*cout << "Z:" << endl;
+					for (size_t k = sample_size + 1; k <= i; k++) {
+						cout << z_function[k] << " ";
+					}
+					cout << endl;*/
+
+				}
+				if (z_function[i] == sample_size) {
+					text_position[i - sample_size - 1].Print();
+				}
 			}
 			//if (!is_end_file || i < last_got) {
 			//cout << "Inc2: " << i << ":" << last_got << endl;
