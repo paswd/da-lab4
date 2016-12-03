@@ -278,6 +278,32 @@ int main() {
 		if (is_end_file) {
 			break;
 		}
+		//
+		/*for (size_t z = sample_size + 1; z < z_function.size(); z++) {
+			cout << z_function[z] << " ";
+		}
+		cout << endl;*/
+
+		/*if (i >= z_block_right && z_tmp < 0) {		
+			z_block_left = 0;
+			z_block_right = 0;
+			last_got = 0;
+
+			text_position.resize(1);
+			sample.resize(sample_size * 2);
+			z_function.resize(sample_size * 2);
+			i = sample_size + 1;
+		}*/
+		size_t index_diff = i - sample_size - 1;
+		for (size_t k = i; k <= last_got; k++) {
+			sample[k - index_diff] = sample[k];
+			z_function[k - index_diff] = z_function[k];
+			text_position[k - sample_size - 1 - index_diff] = text_position[k - sample_size - 1];
+		}
+		i -= index_diff;
+		last_got -= index_diff;
+		z_block_left = 0;
+		z_block_right = 0;
 	}
 
 	//cout << "Got: " << read - 1 << endl;
