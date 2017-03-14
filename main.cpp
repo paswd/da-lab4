@@ -7,9 +7,7 @@
 using namespace std;
 
 int main(void) {
-	//vector <TNumber> sample = GetSample();
-	//ZSearch(sample);
-	ZSearch();
+    ZSearch();
 
-	return 0;
+    return 0;
 }
