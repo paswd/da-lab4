@@ -65,10 +65,11 @@ TNumber Mem::GetValue(void) {
 
 //Functions
 
-vector <TNumber> GetSample(void) {
+void GetSample(vector <TNumber> *res) {
 	string str = "";
 	getline(cin, str);
-	vector <TNumber> res(1);
+	//vector <TNumber> res(1);
+	res->resize(1);
 	size_t res_size = 0;
 	bool is_first_separator = true;
 	TNumber tmp = 0;
@@ -78,12 +79,12 @@ vector <TNumber> GetSample(void) {
 			if (is_first_separator) {
 				is_first_separator = false;
 				is_unused = false;
-				if (res_size >= res.size()) {
-					res.resize(res.size() * 2);
+				if (res_size >= res->size()) {
+					res->resize(res->size() * 2);
 				}
 				size_t now_pos = res_size;
 				res_size++;
-				res[now_pos] = tmp;
+				(*res)[now_pos] = tmp;
 				tmp = 0;
 			}
 			continue;
@@ -94,16 +95,16 @@ vector <TNumber> GetSample(void) {
 		tmp += (TNumber) CharToUNum(str[i]);
 	}
 	if (is_unused) {
-		if (res_size >= res.size()) {
-			res.resize(res.size() * 2);
+		if (res_size >= res->size()) {
+			res->resize(res->size() * 2);
 		}
 		size_t now_pos = res_size;
 		res_size++;
-		res[now_pos] = tmp;
+		(*res)[now_pos] = tmp;
 	}
-	res.resize(res_size + 1);
-	res[res_size] = -1;
-	return res;
+	res->resize(res_size + 1);
+	(*res)[res_size] = -1;
+	//return res;
 }
 
 bool GetNextElement(TNumber *num, bool *is_empty_line, queue <Position> *coordinates, Position *coord_current,
@@ -192,13 +193,14 @@ vector <size_t> GetZBasic(vector <TNumber> sample) {
 
 
 void ZSearch(void) {
-	vector <TNumber> in_sample = GetSample();
+	//vector <TNumber> *in_sample = GetSample();
 	//vector <size_t> z_function(1); //For testing
 	//size_t z_test_size = 0; //For testing
 
 
 	Sample sample;
-	sample.Arr = in_sample;
+	//sample.Arr = in_sample;
+	GetSample(&(sample.Arr));
 	//cout << "Sample size: " << sample.Arr.size() << endl;
 	sample.ZFunction = GetZBasic(sample.Arr);
 
@@ -225,9 +227,9 @@ void ZSearch(void) {
 		//bool is_last_eol;
 		//size_t empty_lines = 0;
 		if ((pos > block.Right || block.Empty) && !is_eof) {
-			z_current = SearchBasic(sample, pos, &block, &mem, &is_eof, &coordinates, &coord_current);
+			z_current = SearchBasic(&sample, pos, &block, &mem, &is_eof, &coordinates, &coord_current);
 		} else {
-			z_current = SearchInBlock(sample, pos, &block, &mem, &is_eof, &coordinates, &coord_current);
+			z_current = SearchInBlock(&sample, pos, &block, &mem, &is_eof, &coordinates, &coord_current);
 		}
 		//cout << "Z_current: " << z_current << ' ';
 		//For testing START
@@ -275,7 +277,7 @@ void ZSearch(void) {
 	//For testing END
 }
 
-size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_t from,
+size_t SearchBasicFrom(Sample *sample, size_t pos, ZBlock *block, Mem *mem, size_t from,
 		bool *is_eof, queue <Position> *coordinates, Position *coord_current) {
 	TNumber current = 0;
 	//bool is_end_line = false;
@@ -304,7 +306,7 @@ size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_
 			//coord_current->Next();
 			while (is_empty_line) {
 				*is_eof = !GetNextElement(&tmp_num, &is_empty_line, coordinates, coord_current,
-					mem, sample.Arr[0]);
+					mem, sample->Arr[0]);
 				//read_new = true;
 				//cout << "Read()" << endl;
 				if (*is_eof) {
@@ -321,11 +323,11 @@ size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_
 			}
 			//*empty_lines = new_lines;
 			current = tmp_num;
-			/*if (current == sample.Arr[0]) {
+			/*if (current == sample->Arr[0]) {
 				coordinates->push(*coord_current);
 			}*/
 		}
-		if (from >= sample.Size()) {
+		if (from >= sample->Size()) {
 			break;
 			if (pos + z_value > 0) {
 				//cout << "SetNewRange1: " << pos << " " << z_value << " " << pos + z_value - 1 << endl;
@@ -334,8 +336,8 @@ size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_
 			}
 		}
 		//cout << "NowZ: " << z_value << endl;
-		//cout << current << ":" << sample.Arr[z_value] << endl;
-		if (current == sample.Arr[z_value]) {
+		//cout << current << ":" << sample->Arr[z_value] << endl;
+		if (current == sample->Arr[z_value]) {
 			//z_value++;
 			if (pos + z_value > 0) {
 				//block->Right = max(block->Right, pos + z_value);
@@ -344,7 +346,7 @@ size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_
 			}
 			//cout << "Z_Increment" << endl;
 			z_value++;
-			if (sample.IsMatch(z_value)) {
+			if (sample->IsMatch(z_value)) {
 				break;
 			} 
 		} else {
@@ -357,17 +359,17 @@ size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_
 	return z_value;
 }
 
-size_t SearchBasic(Sample sample, size_t pos, ZBlock *block, Mem *mem,
+size_t SearchBasic(Sample *sample, size_t pos, ZBlock *block, Mem *mem,
 		bool *is_eof, queue <Position> *coordinates, Position *coord_current) {
 	//cout << "BASIC" << endl;
 	//cout << pos << endl;
 	return SearchBasicFrom(sample, pos, block, mem, 0, is_eof, coordinates, coord_current);
 }
-size_t SearchInBlock(Sample sample, size_t pos, ZBlock *block, Mem *mem,
+size_t SearchInBlock(Sample *sample, size_t pos, ZBlock *block, Mem *mem,
 		bool *is_eof, queue <Position> *coordinates, Position *coord_current) {
 	//cout << "IN_BLOCK" << endl;
 	//cout << pos << endl;
-	size_t pre_value = sample.ZFunction[pos - block->Left];
+	size_t pre_value = sample->ZFunction[pos - block->Left];
 	if (pos + pre_value <= block->Right || pre_value == 0 || *is_eof) {
 		//cout << "Return Pre value: " << pre_value << endl;
 		//cout << "Block: [" << block->Left << ":" << block->Right << "]" << endl;

@@ -92,11 +92,11 @@ bool GetNextElement(TNumber *num, bool *is_empty_line, std::queue <Position> *co
 		Mem *mem);
 std::vector <size_t> GetZBasic(std::vector <TNumber> sample);
 
-size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_t from,
+size_t SearchBasicFrom(Sample *sample, size_t pos, ZBlock *block, Mem *mem, size_t from,
 		bool *is_eof, std::queue <Position> *coordinates, Position *coord_current);
-size_t SearchBasic(Sample sample, size_t pos, ZBlock *block, Mem *mem,
+size_t SearchBasic(Sample *sample, size_t pos, ZBlock *block, Mem *mem,
 		bool *is_eof, std::queue <Position> *coordinates, Position *coord_current);
-size_t SearchInBlock(Sample sample, size_t pos, ZBlock *block, Mem *mem,
+size_t SearchInBlock(Sample *sample, size_t pos, ZBlock *block, Mem *mem,
 		bool *is_eof, std::queue <Position> *coordinates, Position *coord_current);
 
 void ZSearch(void);
