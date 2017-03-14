@@ -35,69 +35,6 @@ void ZBlock::SetNewRange(size_t left, size_t right) {
 	this->Right = right;
 }
 
-/*Cache::Cache(void) {
-	this->Arr.resize(1);
-	this->NewLines.resize(1);
-	this->ArrSize = 0;
-	this->Left = 0;
-	this->Right = 0;
-	this->Last = 0;
-	this->IsLast = false;
-}
-TNumber Cache::GetElement(size_t pos) {
-	return this->Arr[pos];
-}
-size_t Cache::NewLinesCnt(size_t pos) {
-	return this->NewLines[pos];
-}
-void Cache::Push(TNumber element, size_t new_lines_cnt) {
-	if (this->ArrSize >= this->Arr.size()) {
-		this->Arr.resize(this->Arr.size() * 2);
-		this->NewLines.resize(this->NewLines.size() * 2);
-	}
-	if (this->IsNextEOL) {
-		new_lines_cnt++;
-		this->IsNextEOL = false;
-	}
-	size_t last_pos = this->ArrSize;
-	this->ArrSize++;
-	this->Arr[last_pos] = element;	
-	this->NewLines[last_pos] = new_lines_cnt;
-}
-void Cache::Pop(size_t len) {
-	if (len >= this->ArrSize) {
-		this->ArrSize = 0;
-		return;
-	}
-	size_t new_size = this->ArrSize - len;
-	for (size_t i = 0; i < new_size; i++) {
-		this->Arr[i] = this->Arr[i + len];
-		this->NewLines[i] = this->NewLines[i + len];
-	}
-	this->ArrSize = new_size;
-}
-void Cache::Print(void) {
-	for (size_t i = 0; i < this->ArrSize; i++) {
-		cout << this->Arr[i] << ":" << this->NewLines[i] << ' ';
-	}
-	cout << endl;
-	cout << "IsTmp: " << this->IsLast << endl;
-	if (this->IsLast) {
-		cout << "TmpValue: " << this->Last << endl;
-	}
-}
-void Cache::Clear(void) {
-	this->Pop(this->ArrSize);
-	this->Left = 0;
-	this->Right = 0;
-}
-size_t Cache::GetSize(void) {
-	return this->ArrSize;
-}
-void Cache::SetNextEOL(void) {
-	this->IsNextEOL = true;
-}*/
-
 Mem::Mem(void) {
 	this->Cache = 0;
 	this->IsRead = false;
@@ -247,118 +184,6 @@ vector <size_t> GetZBasic(vector <TNumber> sample) {
 	return z_function;
 }
 
-/*size_t SearchBasicFromOld(std::string str, size_t pos, size_t from, ZBlock *block) {
-	size_t z_value = from;
-	while (z_value < str.size() && z_value + pos < str.size()) {
-		if (str[z_value] != str[z_value + pos]) {
-			break;
-		}
-		z_value++;
-	}
-	if (z_value > from) {
-		block->Left = pos - from;
-		block->Right = pos + z_value - 1;
-	}
-	return z_value;
-}
-size_t SearchBasicOld(std::string str, size_t pos, ZBlock *block) {
-	return SearchBasicFrom(str, pos, 0, block);
-}*/
-
-
-/*size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Cache *cache, size_t from,
-		bool *is_eof, size_t *empty_lines, bool *is_last_eol) {
-	size_t z_value = from;
-	bool is_end_line;alse;
-	*is_last_eol = false;
-	while (true) {
-		TNumber num;
-		cout << "Pos: " << pos << endl;
-		cout << "ZVal: " << z_value << endl;
-		cout << "BlockRight: " << block->Right << endl;
-		bool read_new = false;
-		if (!cache->IsLast) {
-			if (*is_eof) {
-				break;
-			}
-			size_t new_lines = 0;
-			bool is_empty_line = true;
-			if (is_last_eol) {
-				new_lines++;
-			}
-			while (is_empty_line) {
-				*is_eof = !GetNextElement(&num, &is_end_line, &is_empty_line, is_last_eol);
-				read_new = true;
-				cout << "Read()" << endl;
-				if (*is_eof) {
-					break;
-				}
-				if (is_empty_line) {
-					new_lines++;
-				}
-			}
-			if (*is_eof) {
-				break;
-			}
-			*empty_lines = new_lines;
-			
-		} else {
-			num = cache->Last;
-			cache->IsLast = false;
-		}
-		cout << "Num: " << num << endl;
-		cache->Print();
-		if (sample.Arr[z_value] != num) {
-			if (read_new) {
-				cache->Last = num;
-				cache->IsLast = true;
-			}
-			break;
-		}
-		z_value++;
-		cout << endl;
-	}
-	cout << "ResPos: " << pos << endl;
-	cout << "ResZ: " << z_value << endl;
-	if (z_value > from) {
-		block->Empty = false;
-		block->Left = pos - from;
-		block->Right = block->Left + z_value - 1;
-	}
-	return z_value;
-}*/
-/*size_t SearchBasic(Sample sample, size_t pos, ZBlock *block, Cache *cache,
-		bool *is_eof, size_t *empty_lines, bool *is_last_eol) {
-	cout << "============" << endl;
-	cout << "BASIC" << endl;
-	return SearchBasicFrom(sample, pos, block, cache, 0, is_eof, empty_lines, is_last_eol);
-}*/
-/*size_t SearchInBlockOld(std::string str, size_t pos, ZBlock *block, std::vector <size_t> z_function) {
-	size_t pre_value = z_function[pos - block->Left];
-	if (pos + pre_value < block->Right || pre_value == 0) {
-		return pre_value;
-	} else {
-		return SearchBasicFrom(str, pos, block->Right - pos + 1, block);
-	}
-}*/
-/*size_t SearchInBlock(Sample sample, size_t pos, ZBlock *block, Cache *cache,
-		bool *is_eof, size_t *empty_lines, bool *is_last_eol) {
-	cout << "============" << endl;
-	cout << "BLOCK" << endl;
-	size_t pre_value = sample.ZFunction[pos - block->Left];
-	cout << "Pos: " << pos << endl;
-	cout << "PreValue: " << pre_value << endl;
-	//cout << "Left: " << block->Left << endl;
-	//cout << "Right: " << block->Right << endl;
-	if (pos + pre_value < block->Right || pre_value == 0 || *is_eof) {
-		//block->Left = pos;
-		return pre_value;
-	} else {
-		size_t bas_search = SearchBasicFrom(sample, pos + 1, block, cache, block->Right - pos + 1, is_eof, empty_lines, is_last_eol);
-		cout << "BasSearch: " << bas_search << endl;
-		return max(pre_value, bas_search);
-	}
-}*/
 
 void ZSearch(vector <TNumber> in_sample) {
 	//vector <size_t> z_function(1); //For testing
@@ -397,7 +222,7 @@ void ZSearch(vector <TNumber> in_sample) {
 		} else {
 			z_current = SearchInBlock(sample, pos, &block, &mem, &is_eof, &coordinates, &coord_current);
 		}
-		//cout << z_current << ' ';
+		//cout << "Z_current: " << z_current << ' ';
 		//For testing START
 		/*if (z_test_size >= z_function.size()) {
 			z_function.resize(z_function.size() * 2);
@@ -421,8 +246,11 @@ void ZSearch(vector <TNumber> in_sample) {
 			res = coordinates.front();
 			coordinates.pop();
 		}
+
 		if (z_current >= sample_size) {
+			//cout << "~~~~~~~~~~~~~~~~" << endl;
 			cout << res.Line << ", " << res.Pos << endl;
+			//cout << "~~~~~~~~~~~~~~~~" << endl;
 		}
 		pos++;
 
@@ -430,10 +258,14 @@ void ZSearch(vector <TNumber> in_sample) {
 		//cout << "Left: " << block.Left << endl;
 		//cout << "Right: " << block.Right << endl;
 	}
-	/*for (size_t i = 0; i < z_test_size; i++) {
+	//For testing START
+	/*
+	for (size_t i = 0; i < z_test_size; i++) {
 		cout << z_function[i] << ' ';
 	}
-	cout << endl;*/
+	cout << endl;
+	*/
+	//For testing END
 }
 
 size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_t from,
@@ -471,11 +303,11 @@ size_t SearchBasicFrom(Sample sample, size_t pos, ZBlock *block, Mem *mem, size_
 				if (*is_eof) {
 					break;
 				}
-				if (is_empty_line) {
+				/*if (is_empty_line) {
 					//cout << "new_lines2++" << endl;
 					//new_lines++;
 					//coord_current->NewLine();
-				}
+				}*/
 			}
 			if (*is_eof) {
 				break;
@@ -529,13 +361,14 @@ size_t SearchInBlock(Sample sample, size_t pos, ZBlock *block, Mem *mem,
 	//cout << "IN_BLOCK" << endl;
 	//cout << pos << endl;
 	size_t pre_value = sample.ZFunction[pos - block->Left];
-	if (pos + pre_value < block->Right || pre_value == 0 || *is_eof) {
+	if (pos + pre_value <= block->Right || pre_value == 0 || *is_eof) {
 		//cout << "Return Pre value: " << pre_value << endl;
 		//cout << "Block: [" << block->Left << ":" << block->Right << "]" << endl;
 		return pre_value;
 	} else {
 		//cout << "PTT:RIGHT = " << block->Right << endl;
-		size_t bas_search = SearchBasicFrom(sample, pos, block, mem, pre_value,
+		size_t start_value = block->Right - pos + 1;
+		size_t bas_search = SearchBasicFrom(sample, pos, block, mem, start_value,
 			is_eof, coordinates, coord_current);
 		return max(pre_value, bas_search);
 	}
