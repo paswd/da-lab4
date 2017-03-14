@@ -99,6 +99,6 @@ size_t SearchBasic(Sample sample, size_t pos, ZBlock *block, Mem *mem,
 size_t SearchInBlock(Sample sample, size_t pos, ZBlock *block, Mem *mem,
 		bool *is_eof, std::queue <Position> *coordinates, Position *coord_current);
 
-void ZSearch(std::vector <TNumber> in_sample);
+void ZSearch(void);
 
 #endif

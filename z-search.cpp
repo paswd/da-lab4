@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <sstream>
 #include "converter.h"
 
 using namespace std;
@@ -109,12 +110,13 @@ bool GetNextElement(TNumber *num, bool *is_empty_line, queue <Position> *coordin
 		Mem *mem, TNumber first) {
 	int sym;
 	bool is_got = false;
-	TNumber res = 0;
+	//TNumber res = 0;
 	*num = 0;
 	//*is_end_line = false;
 	*is_empty_line = false;
 	//*is_last_eol = false;
 	bool is_last_eol = false;
+	string res_str = "";
 	while (true) {
 		//cout << "Point" << endl;
 		sym = getchar();
@@ -135,7 +137,9 @@ bool GetNextElement(TNumber *num, bool *is_empty_line, queue <Position> *coordin
 				}
 				continue;
 			}
-			if (res == first) {
+			stringstream sstr(res_str);
+			sstr >> *num;
+			if (*num == first) {
 				coordinates->push(*coord_current);
 			}
 			if (is_last_eol) {
@@ -143,13 +147,15 @@ bool GetNextElement(TNumber *num, bool *is_empty_line, queue <Position> *coordin
 			} else {
 				coord_current->Next();
 			}
-			*num = res;
+			//*num = res;
+
 			mem->Read(*num);
 			return true;
 		}
 		is_got = true;
-		res *= 10;
-		res += (TNumber) CharToUNum(sym);
+		/*res *= 10;
+		res += (TNumber) CharToUNum(sym);*/
+		res_str += sym;
 	}
 }
 
@@ -185,7 +191,8 @@ vector <size_t> GetZBasic(vector <TNumber> sample) {
 }
 
 
-void ZSearch(vector <TNumber> in_sample) {
+void ZSearch(void) {
+	vector <TNumber> in_sample = GetSample();
 	//vector <size_t> z_function(1); //For testing
 	//size_t z_test_size = 0; //For testing
 
